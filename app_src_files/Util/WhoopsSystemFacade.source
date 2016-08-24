@@ -1,0 +1,83 @@
+<?php
+namespace Application\Src\Util;
+
+use Whoops\Util\SystemFacade;
+use Application\Src\Error\Handler\WarningsLogHandler;
+use Whoops\Exception\ErrorException;
+use Exception;
+
+class WhoopsSystemFacade extends SystemFacade
+{
+    /**
+     * @var WarningsLogHandler
+     */
+    private $warningsLogHandler;
+
+    /**
+     * @var callable
+     */
+    private $realHandleError = null;
+
+    /**
+     * Initializes the instance.
+     *
+     * @param WarningsLogHandler $warningsLogHandler
+     */
+    public function __construct(WarningsLogHandler $warningsLogHandler)
+    {
+        $this->warningsLogHandler = $warningsLogHandler;
+    }
+
+    /**
+     * Wrapper of the Run::handleError method.
+     * If Run would skip the error, let's log it anyway, otherwise let's call the Run::handleError method.
+     *
+     * This method MUST be compatible with set_error_handler.
+     *
+     * @param int $level
+     * @param string $message
+     * @param string $file
+     * @param int $line
+     *
+     * @return bool
+     *
+     * @throws ErrorException
+     */
+    public function handleError($level, $message, $file = null, $line = null)
+    {
+        if ($level & $this->getErrorReportingLevel()) {
+            if ($this->realHandleError !== null) {
+                call_user_func($this->realHandleError, $level, $message, $file, $line);
+            }
+        } else {
+            try {
+                $this->warningsLogHandler->logError(new ErrorException($message, $level, $level, $file, $line));
+            } catch (Exception $x) {
+            }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see \Whoops\Util\SystemFacade::setErrorHandler()
+     */
+    public function setErrorHandler(callable $handler, $types = 'use-php-defaults')
+    {
+        $this->realHandleError = $handler;
+
+        return set_error_handler([$this, 'handleError'], -1);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see \Whoops\Util\SystemFacade::restoreErrorHandler()
+     */
+    public function restoreErrorHandler()
+    {
+        $this->realHandleError = null;
+
+        return parent::restoreErrorHandler();
+    }
+}

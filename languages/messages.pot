@@ -1,0 +1,215 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: warnings_log 1.3.7\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2016-08-24T15:47:32+02:00\n"
+"PO-Revision-Date: 2016-08-24T15:47:32+02:00\n"
+"Language: en_US\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: packages/warnings_log/controller.php:21
+#: packages/warnings_log/controller.php:148
+#: packages/warnings_log/elements/dashboard/install_post.php:7
+msgid "Warnings Log"
+msgstr ""
+
+#: packages/warnings_log/controller.php:26
+msgid "Log all the warnings."
+msgstr ""
+
+#: packages/warnings_log/controller.php:36
+#, php-format
+msgid "The folder %s must be writable"
+msgstr ""
+
+#: packages/warnings_log/controller.php:39
+#, php-format
+msgid "%s PHP extension is not installed"
+msgstr ""
+
+#: packages/warnings_log/controller.php:42
+#, php-format
+msgid "%s PDO driver is not installed"
+msgstr ""
+
+#: packages/warnings_log/controller.php:133
+msgid "Failed to create the destination directory"
+msgstr ""
+
+#: packages/warnings_log/controller.php:137
+msgid "Failed to copy file to the destination directory"
+msgstr ""
+
+#: packages/warnings_log/controller.php:155
+msgid "Warnings Log Settings"
+msgstr ""
+
+#: packages/warnings_log/controllers/single_page/dashboard/reports/warnings_log/settings.php:37
+msgid "Error Handling configured successfully."
+msgstr ""
+
+#: packages/warnings_log/controllers/single_page/dashboard/reports/warnings_log.php:66
+#: packages/warnings_log/controllers/single_page/dashboard/reports/warnings_log.php:83
+#, php-format
+msgid "Invalid parameter: %s"
+msgstr ""
+
+#: packages/warnings_log/controllers/single_page/dashboard/reports/warnings_log.php:72
+#, php-format
+msgid "%d element has been hidden"
+msgid_plural "%d elements have been hidden"
+msgstr[0] ""
+msgstr[1] ""
+
+#: packages/warnings_log/controllers/single_page/dashboard/reports/warnings_log.php:76
+#, php-format
+msgid "%d element has been shown"
+msgid_plural "%d elements have been shown"
+msgstr[0] ""
+msgstr[1] ""
+
+#: packages/warnings_log/controllers/single_page/dashboard/reports/warnings_log.php:80
+#, php-format
+msgid "%d element has been deleted"
+msgid_plural "%d elements have been deleted"
+msgstr[0] ""
+msgstr[1] ""
+
+#: packages/warnings_log/elements/dashboard/install.php:23
+#, php-format
+msgid "Folder %s is writable"
+msgstr ""
+
+#: packages/warnings_log/elements/dashboard/install.php:24
+#, php-format
+msgid "This package must be able to write to the %s directory."
+msgstr ""
+
+#: packages/warnings_log/elements/dashboard/install.php:34
+#, php-format
+msgid "%s PHP extension installed"
+msgstr ""
+
+#: packages/warnings_log/elements/dashboard/install.php:35
+#, php-format
+msgid "This package needs the %s PHP extension."
+msgstr ""
+
+#: packages/warnings_log/elements/dashboard/install.php:46
+#, php-format
+msgid "%s PDO driver installed"
+msgstr ""
+
+#: packages/warnings_log/elements/dashboard/install.php:47
+#, php-format
+msgid "This package needs the %s PDO driver."
+msgstr ""
+
+#: packages/warnings_log/elements/dashboard/install.php:58
+msgid "Before installing this package, please fix all the above errors."
+msgstr ""
+
+#: packages/warnings_log/elements/dashboard/install.php:59
+msgid "Repeat checks"
+msgstr ""
+
+#: packages/warnings_log/elements/dashboard/install_post.php:7
+#, php-format
+msgid "%s has been installed, but it is not yet active."
+msgstr ""
+
+#: packages/warnings_log/elements/dashboard/install_post.php:8
+#, php-format
+msgid "In order to activate it, please go to <a href=\"%s\">this page</a>."
+msgstr ""
+
+#: packages/warnings_log/elements/warnings_view_header.php:2
+msgid "Items Selected"
+msgstr ""
+
+#: packages/warnings_log/elements/warnings_view_header.php:3
+msgid "Hide"
+msgstr ""
+
+#: packages/warnings_log/elements/warnings_view_header.php:4
+msgid "Show"
+msgstr ""
+
+#: packages/warnings_log/elements/warnings_view_header.php:5
+msgid "Delete"
+msgstr ""
+
+#: packages/warnings_log/elements/warnings_view_header.php:9
+msgid "Show hidden warnings"
+msgstr ""
+
+#: packages/warnings_log/single_pages/dashboard/reports/warnings_log/settings.php:16
+msgid "Error Handling"
+msgstr ""
+
+#: packages/warnings_log/single_pages/dashboard/reports/warnings_log/settings.php:21
+msgid "Use default error handler"
+msgstr ""
+
+#: packages/warnings_log/single_pages/dashboard/reports/warnings_log/settings.php:27
+msgid "Activate Warnings Log"
+msgstr ""
+
+#: packages/warnings_log/single_pages/dashboard/reports/warnings_log/settings.php:36
+#, php-format
+msgid "Custom provider (%s)"
+msgstr ""
+
+#: packages/warnings_log/single_pages/dashboard/reports/warnings_log/settings.php:46
+msgid "Since the error handling is initialized at an early stage of the execution, warnings may be intercepted even before the database is configured (and even before concrete5 is installed)."
+msgstr ""
+
+#: packages/warnings_log/single_pages/dashboard/reports/warnings_log/settings.php:47
+#, php-format
+msgid "For these reasons, the database used to save the errors/warnings is not the one used by this concrete5 installation, but it's a SQLite file called %1$s created in your %2$s directory"
+msgstr ""
+
+#: packages/warnings_log/single_pages/dashboard/reports/warnings_log/settings.php:52
+msgid "Save"
+msgstr ""
+
+#: packages/warnings_log/single_pages/dashboard/reports/warnings_log.php:15
+msgid "Code"
+msgstr ""
+
+#: packages/warnings_log/single_pages/dashboard/reports/warnings_log.php:16
+msgid "File"
+msgstr ""
+
+#: packages/warnings_log/single_pages/dashboard/reports/warnings_log.php:17
+msgid "Message"
+msgstr ""
+
+#: packages/warnings_log/single_pages/dashboard/reports/warnings_log.php:18
+msgid "# Seen"
+msgstr ""
+
+#: packages/warnings_log/single_pages/dashboard/reports/warnings_log.php:19
+msgid "First Seen"
+msgstr ""
+
+#: packages/warnings_log/single_pages/dashboard/reports/warnings_log.php:20
+msgid "Last Seen"
+msgstr ""
+
+#: packages/warnings_log/single_pages/dashboard/reports/warnings_log.php:21
+msgid "Call stack"
+msgstr ""
+
+#: packages/warnings_log/single_pages/dashboard/reports/warnings_log.php:66
+msgid "Call Stack"
+msgstr ""
+
+#: packages/warnings_log/single_pages/dashboard/reports/warnings_log.php:70
+msgid "Close"
+msgstr ""

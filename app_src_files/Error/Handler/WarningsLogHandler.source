@@ -1,0 +1,155 @@
+<?php
+namespace Application\Src\Error\Handler;
+
+use Exception;
+use Whoops\Handler\Handler;
+use Application\Src\Util\WhoopsStorage;
+
+class WarningsLogHandler extends Handler
+{
+    /**
+     * @var WhoopsStorage|null
+     */
+    private $storage = null;
+
+    /**
+     * @param WhoopsStorage $storage
+     */
+    public function setStorage(WhoopsStorage $storage)
+    {
+        $this->storage = $storage;
+    }
+
+    /**
+     * @return WhoopsStorage
+     */
+    public function getStorage()
+    {
+        if ($this->storage === null) {
+            $this->storage = new WhoopsStorage();
+        }
+
+        return $this->storage;
+    }
+
+    public function handle()
+    {
+        try {
+            $inspector = $this->getInspector();
+            if ($inspector !== null) {
+                $exception = $inspector->getException();
+                if ($exception !== null) {
+                    $this->logError($exception);
+                }
+            }
+        } catch (Exception $x) {
+        }
+
+        return self::DONE;
+    }
+
+    /**
+     * @var array|null
+     */
+    private $errorTypeNames;
+
+    /**
+     * @param int $error_type
+     *
+     * @return string
+     */
+    protected function describeErrorType($error_type)
+    {
+        if (!isset($this->errorTypeNames)) {
+            $errorTypeNames = [];
+            $allConstants = get_defined_constants(true);
+            $coreConstants = isset($allConstants['Core']) ? $allConstants['Core'] : [];
+            foreach ($coreConstants as $name => $value) {
+                if (is_int($value) && !isset($errorTypeNames[$value]) && strpos($name, 'E_') === 0) {
+                    $errorTypeNames[$value] = $name;
+                }
+            }
+            $this->errorTypeNames = $errorTypeNames;
+        }
+
+        return (is_int($error_type) && isset($this->errorTypeNames[$error_type])) ? $this->errorTypeNames[$error_type] : (string) $error_type;
+    }
+
+    /**
+     * @param \Throwable $error
+     *
+     * @throws Exception
+     */
+    public function logError($error)
+    {
+        if (!(
+            is_object($error)
+            && is_callable([$error, 'getCode'])
+            && is_callable([$error, 'getFile'])
+            && is_callable([$error, 'getLine'])
+            && is_callable([$error, 'getMessage'])
+        )) {
+            throw new Exception('Invalid log error');
+        }
+        if ($error instanceof \Error || $error instanceof \ErrorException) {
+            $code = $this->describeErrorType($error->getCode());
+        } else {
+            $code = (string) $error->getCode();
+        }
+        $dirBaseStandard = str_replace(DIRECTORY_SEPARATOR, '/', DIR_BASE);
+        $dirBaseReal = str_replace('/', DIRECTORY_SEPARATOR, $dirBaseStandard);
+        $file = str_replace(DIRECTORY_SEPARATOR, '/', (string) $error->getFile());
+        if (strpos($file, $dirBaseStandard) === 0) {
+            $file = substr($file, strlen($dirBaseStandard));
+        }
+        $line = (int) $error->getLine();
+        $message = (string) $error->getMessage();
+        if (is_callable([$error, 'getTrace'])) {
+            $traces = $error->getTrace();
+        } else {
+            $traces = debug_backtrace();
+        }
+        $calls = [];
+        if (is_array($traces)) {
+            $traces = array_reverse($traces);
+            foreach ($traces as $i => $trace) {
+                if (!(is_array($trace) && isset($trace['file']) && isset($trace['file']))) {
+                    continue;
+                }
+                $call = '#'.($i + 1).' '.str_replace(DIRECTORY_SEPARATOR, '/', str_replace($dirBaseReal, '', $trace['file']));
+                if (isset($trace['line']) && $trace['line']) {
+                    $call .= '('.$trace['line'].')';
+                }
+                $call .= ': ';
+                if (isset($trace['class']) && $trace['class']) {
+                    $call .= $trace['class'].((isset($trace['type']) && $trace['type']) ? $trace['type'] : '::->');
+                }
+                if (isset($trace['function']) && $trace['function']) {
+                    $call .= $trace['function'].'(';
+                    if (isset($trace['args']) && is_array($trace['args'])) {
+                        $firstArg = true;
+                        foreach ($trace['args'] as $arg) {
+                            if ($firstArg) {
+                                $firstArg = false;
+                            } else {
+                                $call .= ', ';
+                            }
+                            if ($arg === null || is_int($arg) || is_float($arg) || is_string($arg)) {
+                                $call .= json_encode($arg);
+                            } elseif (is_object($call)) {
+                                $call .= get_class($arg);
+                            } else {
+                                $call .= gettype($arg);
+                            }
+                        }
+                    }
+                    $call .= ')';
+                }
+                $calls[] = $call;
+            }
+        }
+        $callStack = implode("\n", $calls);
+        $storage = $this->getStorage();
+        $storage->save($code, $file, $line, $message, $callStack);
+    }
+}

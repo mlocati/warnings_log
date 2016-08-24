@@ -1,0 +1,41 @@
+<?php
+namespace Application\Src\Error\Provider;
+
+use Concrete\Core\Error\Handler\ErrorHandler;
+use Concrete\Core\Error\Handler\JsonErrorHandler;
+use Whoops\Handler\PlainTextHandler;
+use Whoops\Run;
+use Whoops\Util\Misc;
+use Application\Src\Util\WhoopsSystemFacade;
+use Application\Src\Error\Handler\WarningsLogHandler;
+
+class WhoopsServiceProvider
+{
+    public function register()
+    {
+        if (function_exists('ini_set')) {
+            ini_set('display_errors', 0);
+        }
+        $warningslog_handler = new WarningsLogHandler();
+
+        $systemFacade = new WhoopsSystemFacade($warningslog_handler);
+        $run = new Run($systemFacade);
+
+        $handler = new ErrorHandler();
+        $run->pushHandler($handler);
+
+        $json_handler = new JsonErrorHandler();
+        $run->pushHandler($json_handler);
+
+        if (Misc::isCommandLine()) {
+            $cli_handler = new PlainTextHandler();
+            $cli_handler->addTraceFunctionArgsToOutput(true);
+            $cli_handler->addTraceToOutput(true);
+            $run->pushHandler($cli_handler);
+        }
+
+        $run->pushHandler($warningslog_handler);
+
+        $run->register();
+    }
+}

@@ -1,0 +1,150 @@
+<?php
+namespace Application\Src\Util;
+
+use PDO;
+use Exception;
+
+class WhoopsStorage
+{
+    /**
+     * @param string $code
+     * @param string $message
+     * @param string $file
+     * @param int $line
+     * @param string $callStack
+     *
+     * @throws Exception
+     */
+    public function save($code, $file, $line, $message, $callStack)
+    {
+        $cn = $this->getConnection(true);
+        $insertQuery = $this->getQuery('insert');
+        $cn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
+        if ($insertQuery->execute([
+            ':code' => $code,
+            ':file' => $file,
+            ':line' => $line,
+            ':message' => $message,
+            ':callStack' => $callStack,
+
+        ]) !== true) {
+            $updateQuery = $this->getQuery('update');
+            $cn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $updateQuery->execute([
+                ':code' => $code,
+                ':file' => $file,
+                ':line' => $line,
+                ':message' => $message,
+            ]);
+        }
+    }
+
+    /**
+     * @var PDO|null
+     */
+    private $connection = null;
+
+    /**
+     * @param bool $createDatabase
+     *
+     * @return PDO|null
+     *
+     * @throws Exception
+     */
+    public function getConnection($createDatabase = true)
+    {
+        if ($this->connection === null) {
+            $filename = DIR_FILES_UPLOADED_STANDARD.'/WarningsLog.sqlite';
+            if (is_file($filename)) {
+                $cn = new PDO('sqlite:' . $filename);
+            } elseif (!$createDatabase) {
+                $cn = null;
+            } else {
+                if (!class_exists('\PDO') || !is_callable('\PDO::getAvailableDrivers')) {
+                    throw new Exception('PHP extension missing: PDO.');
+                }
+                if (!in_array('sqlite', PDO::getAvailableDrivers(), true)) {
+                    throw new Exception('PDO driver missing: sqlite');
+                }
+                $cn = $this->createDatabase($filename);
+            }
+            $this->connection = $cn;
+        }
+
+        return $this->connection;
+    }
+
+    /**
+     * @param string $filename
+     *
+     * @return PDO
+     *
+     * @throws Exception 
+     */
+    protected function createDatabase($filename)
+    {
+        $cn = null;
+        try {
+            $cn = new PDO('sqlite:' . $filename);
+            $cn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $cn->query('
+CREATE TABLE warnings (
+    id        INTEGER     PRIMARY KEY AUTOINCREMENT NOT NULL,
+    code      STRING(50)  NOT NULL,
+    file      STRING(255) NOT NULL,
+    line      INTEGER     NOT NULL,
+    message   TEXT        NOT NULL,
+    firstSeen DATETIME    NOT NULL,
+    lastSeen  DATETIME    NOT NULL,
+    numSeen   INTEGER     NOT NULL,
+    callStack TEXT        NOT NULL,
+    hide      BOOLEAN     NOT NULL DEFAULT (0) 
+)
+            ');
+            $cn->query('CREATE UNIQUE INDEX rowIdentifier ON warnings (code, file, line, message)');
+        } catch (Exception $x) {
+            if ($cn !== null) {
+                $cn = null;
+            }
+            if (is_file($filename)) {
+                @unlink($filename);
+            }
+            throw $x;
+        }
+
+        return $cn;
+    }
+
+    /**
+     * @var \PDOStatement[]
+     */
+    private $queries = [];
+
+    /**
+     * @param string $id
+     *
+     * @throws Exception
+     *
+     * @return \PDOStatement
+     */
+    protected function getQuery($id)
+    {
+        if (!isset($this->queries[$id])) {
+            switch ($id) {
+                case 'insert':
+                    $sql = "INSERT INTO warnings (code, file, line, message, firstSeen, lastSeen, numSeen, callStack) VALUES (:code, :file, :line, :message, datetime('NOW', 'localtime'), datetime('NOW', 'localtime'), 1, :callStack)";
+                    break;
+                case 'update':
+                    $sql = "UPDATE warnings SET lastSeen = datetime('NOW', 'localtime'), numSeen = numSeen + 1 WHERE (code = :code) AND (file = :file) AND (line = :line) and (message = :message)";
+                    break;
+                default:
+                    throw new Exception('Invalid query ID: '.$id);
+            }
+            $cn = $this->getConnection(true);
+            $cn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->queries[$id] = $cn->prepare($sql);
+        }
+
+        return $this->queries[$id];
+    }
+}
