@@ -28,8 +28,8 @@ defined('C5_EXECUTE') or die('Access Denied.');
 <script>$(document).ready(function() {
 
 var $tbody = $('#wl-table tbody');
-function textToHtml(text) {
-	text = (text === null) ? '' : text.toString();
+function textToHtml(text, asList, replace) {
+	text = (text === null) ? '' : $.trim(text.toString());
 	if (text === '') {
 		return '';
 	}
@@ -38,9 +38,13 @@ function textToHtml(text) {
 	}
 	var lines = [];
 	$.each(text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n'), function(i, line) {
-		lines.push(textToHtml.$div.text(line).html());
+		if (replace) {
+			line = line.replace(replace.search, replace.replace);
+		}
+		line = textToHtml.$div.text(line).html();
+		lines.push(line);
 	});
-	return lines.join('<br />');
+	return asList ? ('<' + asList + '><li>' + lines.join('</li><li>') + '</li></' + asList + '>') : lines.join('<br />'); 
 }
 function Item(d) {
 	var me = this;
@@ -59,7 +63,7 @@ function Item(d) {
 			.append($('<a href="#"><i class="fa fa-eye"></i>')
 				.on('click', function() {
 					var $dlg = $('<div />')
-						.append($('<code />').html(textToHtml(me.callStack)))
+						.append($('<code />').html(textToHtml(me.callStack, 'ol', {search: /^#\d+\s+/, replace: ''})))
 					;
 					$dlg.dialog({
 						modal: true,
