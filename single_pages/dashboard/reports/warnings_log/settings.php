@@ -27,7 +27,7 @@ defined('C5_EXECUTE') or die('Access Denied.');
 					<?=t('Activate Warnings Log')?>
 				</label>
 			</div>
-			<?
+			<?php
 			if (!in_array($current_provider, [$default_provider, $warningslog_provider], true)) {
 			    ?>
 			    <div class="radio">
