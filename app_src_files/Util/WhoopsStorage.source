@@ -102,6 +102,17 @@ CREATE TABLE warnings (
 )
             ');
             $cn->query('CREATE UNIQUE INDEX rowIdentifier ON warnings (code, file, line, message)');
+            $cn->query('
+CREATE VIEW relevant AS
+    SELECT
+        *
+    FROM
+        warnings
+    WHERE
+        hide = 0
+    ORDER BY
+        numSeen DESC
+            ');
         } catch (Exception $x) {
             if ($cn !== null) {
                 $cn = null;
