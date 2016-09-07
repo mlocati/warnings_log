@@ -53,7 +53,7 @@ class WhoopsStorage
      */
     public function getConnection($createDatabase = true)
     {
-        if ($this->connection === null) {
+        if (!isset($this->connection)) {
             $filename = DIR_FILES_UPLOADED_STANDARD.'/WarningsLog.sqlite';
             if (is_file($filename)) {
                 $cn = new PDO('sqlite:' . $filename);
@@ -157,5 +157,12 @@ CREATE VIEW relevant AS
         }
 
         return $this->queries[$id];
+    }
+
+    public function __destruct()
+    {
+        if (isset($this->connection)) {
+            unset($this->connection);
+        }
     }
 }

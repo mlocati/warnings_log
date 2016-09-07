@@ -14,7 +14,7 @@ class Controller extends Package
 {
     protected $pkgHandle = 'warnings_log';
     protected $appVersionRequired = '8.0.0b3';
-    protected $pkgVersion = '1.3.7';
+    protected $pkgVersion = '1.3.8';
 
     public function getPackageName()
     {
