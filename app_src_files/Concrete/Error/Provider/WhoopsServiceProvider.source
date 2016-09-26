@@ -1,13 +1,13 @@
 <?php
-namespace Application\Src\Error\Provider;
+namespace Application\Concrete\Error\Provider;
 
 use Concrete\Core\Error\Handler\ErrorHandler;
 use Concrete\Core\Error\Handler\JsonErrorHandler;
 use Whoops\Handler\PlainTextHandler;
 use Whoops\Run;
 use Whoops\Util\Misc;
-use Application\Src\Util\WhoopsSystemFacade;
-use Application\Src\Error\Handler\WarningsLogHandler;
+use Application\Concrete\Util\WhoopsSystemFacade;
+use Application\Concrete\Error\Handler\WarningsLogHandler;
 
 class WhoopsServiceProvider
 {

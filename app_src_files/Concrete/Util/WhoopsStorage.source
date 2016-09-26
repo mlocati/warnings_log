@@ -1,5 +1,5 @@
 <?php
-namespace Application\Src\Util;
+namespace Application\Concrete\Util;
 
 use PDO;
 use Exception;

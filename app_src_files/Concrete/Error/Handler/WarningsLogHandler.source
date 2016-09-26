@@ -1,9 +1,9 @@
 <?php
-namespace Application\Src\Error\Handler;
+namespace Application\Concrete\Error\Handler;
 
 use Exception;
 use Whoops\Handler\Handler;
-use Application\Src\Util\WhoopsStorage;
+use Application\Concrete\Util\WhoopsStorage;
 
 class WarningsLogHandler extends Handler
 {

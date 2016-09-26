@@ -1,8 +1,8 @@
 <?php
-namespace Application\Src\Util;
+namespace Application\Concrete\Util;
 
 use Whoops\Util\SystemFacade;
-use Application\Src\Error\Handler\WarningsLogHandler;
+use Application\Concrete\Error\Handler\WarningsLogHandler;
 use Whoops\Exception\ErrorException;
 use Exception;
 

@@ -4,7 +4,7 @@ namespace Concrete\Package\WarningsLog\Controller\SinglePage\Dashboard\Reports;
 use PDO;
 use Exception;
 use Concrete\Core\Page\Controller\DashboardPageController;
-use Application\Src\Util\WhoopsStorage;
+use Application\Concrete\Util\WhoopsStorage;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 defined('C5_EXECUTE') or die('Access Denied.');
