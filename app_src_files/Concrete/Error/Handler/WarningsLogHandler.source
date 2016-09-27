@@ -75,7 +75,7 @@ class WarningsLogHandler extends Handler
         return (is_int($error_type) && isset($this->errorTypeNames[$error_type])) ? $this->errorTypeNames[$error_type] : (string) $error_type;
     }
 
-    private static function serializeArgument($arg, $isFirstCall)
+    private static function serializeArgument($arg, $isFirstCall = false)
     {
         $type = gettype($arg);
         switch (gettype($arg)) {
