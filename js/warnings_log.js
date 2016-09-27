@@ -4,6 +4,12 @@
 
 var i18n, actions, tokens;
 
+var BUSY = {
+	NO: 0,
+	REFRESHING: 1,
+	YES: 2
+};
+
 function textToHtml(text, asList, replace) {
 	text = (text === null) ? '' : $.trim(text.toString());
 	if (text === '') {
@@ -27,10 +33,11 @@ var Autoreloader = (function() {
 	var hTimer = null;
 	return {
 		set: function() {
+			if (hTimer !== null) {
+				clearTimeout(hTimer);
+				hTimer = null;
+			}
 			if (UI.$autoreload.is(':checked')) {
-				if (hTimer !== null) {
-					clearTimeout(hTimer);
-				}
 				hTimer = setTimeout(
 					function() {
 						hTimer = null;
@@ -38,18 +45,13 @@ var Autoreloader = (function() {
 					},
 					parseInt(UI.$autoreloadInterval.filter('.label-primary').data('ms'))
 				);
-			} else {
-				if (hTimer !== null) {
-					clearTimeout(hTimer);
-					hTimer = null;
-				}
 			}
 		}
 	};
 })();
 
 var UI = (function() {
-	var disabled = false;
+	var busyLevel = BUSY.NO;
 	function setDisabled($i, disabled)
 	{
 		if (disabled) {
@@ -61,27 +63,23 @@ var UI = (function() {
 	function refresh()
 	{
 		var d;
-		setDisabled(UI.$visibility, disabled);
-		if (disabled)  {
+		setDisabled(UI.$visibility, busyLevel >= BUSY.YES);
+		if (busyLevel > BUSY.NO)  {
 			d = true;
 		} else {
 			d = UI.$tbody.find('input[type="checkbox"]:checked').length === 0;
 		}
 		setDisabled(UI.$bulk, d);
-		setDisabled(UI.$reload, disabled);
-		setDisabled(UI.$autoreload, disabled);
+		setDisabled(UI.$reload, busyLevel > BUSY.REFRESHING);
+		setDisabled(UI.$autoreload, busyLevel > BUSY.REFRESHING);
 	}
 	return {
-		disable: function () {
-			disabled = true;
+		setBusyLevel: function (level) {
+			busyLevel = level;
 			refresh();
 		},
-		enable: function () {
-			disabled = false;
-			refresh();
-		},
-		isDisabled: function() {
-			return disabled;
+		getBusyLevel: function() {
+			return busyLevel;
 		},
 		refresh: refresh,
 		initialize: function() {
@@ -195,7 +193,10 @@ Item.prototype = {
 		if (!this.shownInTable()) {
 			return;
 		}
-		$i.animate({backgroundColor: '#f00'}, 500).animate({backgroundColor: 'transparent'}, 500);
+		$i.css('backgroundColor', 'red');
+		setTimeout(function() {
+			$i.css('backgroundColor', 'transparent');
+		}, 50);
 	}
 };
 var List = {
@@ -243,7 +244,6 @@ var List = {
 		UI.$tbody.find('>tr').each(function() {
 			$(this).detach();
 		});
-		var hidden = UI.$visibility.val() === '1';
 		$.each(this.items, function() {
 			if (this.shownInTable()) {
 				UI.$tbody.append(this.UI.$row);
@@ -252,20 +252,21 @@ var List = {
 		UI.refresh();
 	},
 	reload: function(cb) {
-		if (UI.isDisabled()) {
+		if (UI.getBusyLevel() !== BUSY.NO) {
 			if (cb) {
 				cb();
 			}
 			return;
 		}
-		UI.disable();
+		UI.setBusyLevel(BUSY.REFRESHING);
 		var done = function() {
-			UI.enable();
+			UI.setBusyLevel(BUSY.NO);
 			if (cb) {
 				cb();
 			}
 		};
 		new ConcreteAjaxRequest({
+			loader: false,
 			url: actions.get_warnings_list,
 			data: {
 				ccm_token: tokens.get_warnings_list,
@@ -350,7 +351,7 @@ var Bulk = {
 	apply: function() {
 		var operation = UI.$bulk.val();
 		UI.$bulk.prop('selectedIndex', 0);
-		if (operation === '' || UI.isDisabled()) {
+		if (operation === '' || UI.getBusyLevel() !== BUSY.NO) {
 			return;
 		}
 		var items = [], itemIDs = [];
@@ -379,7 +380,7 @@ var Bulk = {
 		if (items.length === 0) {
 			return;
 		}
-		UI.disable();
+		UI.setBusyLevel(BUSY.YES);
 		var ar;
 		ar = new ConcreteAjaxRequest({
 			url: actions.bulk_operation,
@@ -389,7 +390,7 @@ var Bulk = {
 				itemIDs: itemIDs,
 			},
 			success: function(msg) {
-				UI.enable();
+				UI.setBusyLevel(BUSY.NO);
 				$.each(items, function() {
 					this.UI.$row.find('input[type="checkbox"]').prop('checked', false);
 					switch (operation) {
@@ -410,7 +411,7 @@ var Bulk = {
 				});
 			},
 			error: function(r) {
-				UI.enable();
+				UI.setBusyLevel(BUSY.NO);
 				ar.error(r, ar);
 			}
 		});
