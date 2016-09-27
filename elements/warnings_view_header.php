@@ -12,5 +12,11 @@
 <br>
 <label style="font-weight: normal; float: right">
     <input type="checkbox" id="wl-autoreload" disabled="disabled" />
-    <?=t('Auto-reload list')?>
+    <?php
+    $secs = [];
+    foreach ([0.5, 1, 3, 5, 10, 20, 30, 60] as $s) {
+        $secs[] = '<a href="#" class="wl-autoreload-interval label '.(($s === 10) ? 'label-primary' : 'label-default').'" data-ms="'.($s * 1000).'" onclick="return false">'.Punic\Unit::format($s, 'second', 'narrow').'</a>';
+    }
+    echo t('Auto-reload list every %s', implode(' ', $secs));
+    ?>
 </label>

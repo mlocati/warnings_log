@@ -7,8 +7,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-09-27T14:05:15+02:00\n"
-"PO-Revision-Date: 2016-09-27T14:05:15+02:00\n"
+"POT-Creation-Date: 2016-09-27T16:16:19+02:00\n"
+"PO-Revision-Date: 2016-09-27T16:16:20+02:00\n"
 "Language: it_IT\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
@@ -156,9 +156,10 @@ msgstr "Elimina"
 msgid "Reload list"
 msgstr "Ricarica elenco"
 
-#: packages/warnings_log/elements/warnings_view_header.php:15
-msgid "Auto-reload list"
-msgstr "Auto-ricarica elenco"
+#: packages/warnings_log/elements/warnings_view_header.php:20
+#, php-format
+msgid "Auto-reload list every %s"
+msgstr "Auto-ricarica elenco ogni %s"
 
 #: packages/warnings_log/single_pages/dashboard/reports/warnings_log/settings.php:16
 msgid "Error Handling"

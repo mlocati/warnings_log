@@ -28,15 +28,16 @@ var Autoreloader = (function() {
 	return {
 		set: function() {
 			if (UI.$autoreload.is(':checked')) {
-				if (hTimer === null) {
-					hTimer = setTimeout(
-						function() {
-							hTimer = null;
-							List.reload(Autoreloader.set);
-						},
-						5000
-					);
+				if (hTimer !== null) {
+					clearTimeout(hTimer);
 				}
+				hTimer = setTimeout(
+					function() {
+						hTimer = null;
+						List.reload(Autoreloader.set);
+					},
+					parseInt(UI.$autoreloadInterval.filter('.label-primary').data('ms'))
+				);
 			} else {
 				if (hTimer !== null) {
 					clearTimeout(hTimer);
@@ -89,6 +90,7 @@ var UI = (function() {
 			UI.$bulk = $('#wl-bulk');
 			UI.$reload = $('#wl-reload');
 			UI.$autoreload = $('#wl-autoreload');
+			UI.$autoreloadInterval = $('.wl-autoreload-interval');
 			UI.$bulk.on('change', function() {
 				Bulk.apply();
 			});
@@ -113,6 +115,15 @@ var UI = (function() {
 				List.reload();
 			});
 			UI.$autoreload.on('click', function() {
+				Autoreloader.set();
+			});
+			UI.$autoreloadInterval.on('click', function() {
+				var $a = $(this);
+				if ($a.hasClass('label-primary')) {
+					return;
+				}
+				UI.$autoreloadInterval.removeClass('label-primary').addClass('label-default');
+				$a.removeClass('label-default').addClass('label-primary');
 				Autoreloader.set();
 			});
 			delete UI.initialize;
