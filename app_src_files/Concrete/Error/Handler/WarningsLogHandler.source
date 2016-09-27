@@ -75,6 +75,45 @@ class WarningsLogHandler extends Handler
         return (is_int($error_type) && isset($this->errorTypeNames[$error_type])) ? $this->errorTypeNames[$error_type] : (string) $error_type;
     }
 
+    private static function serializeArgument($arg, $isFirstCall)
+    {
+        $type = gettype($arg);
+        switch (gettype($arg)) {
+            case 'boolean':
+                return $arg ? 'true' : 'false';
+            case 'integer':
+                return (string) $arg;
+            case 'double':
+                return (string) $arg;
+            case 'string':
+                return json_encode($arg);
+            case 'array':
+                $vals = [];
+                if (!empty($arg)) {
+                    $serializeKeys = array_keys($arg) !== range(0, count($arg) - 1);
+                    foreach ($arg as $i => $v) {
+                        if ($serializeKeys) {
+                            $prefix = self::serializeArgument($i).' => ';
+                        } else {
+                            $prefix = '';
+                        }
+                        $vals[] = $prefix.self::serializeArgument($v);
+                    }
+                }
+                $vals = implode(', ', $vals);
+
+                return $isFirstCall ? $vals : "[$vals]";
+            case 'object':
+                return get_class($arg);
+            case 'resource':
+                return (string) $arg;
+            case 'NULL':
+                return 'null';
+            default:
+                return $type;
+        }
+    }
+
     /**
      * @param \Throwable $error
      *
@@ -126,22 +165,8 @@ class WarningsLogHandler extends Handler
                 }
                 if (isset($trace['function']) && $trace['function']) {
                     $call .= $trace['function'].'(';
-                    if (isset($trace['args']) && is_array($trace['args'])) {
-                        $firstArg = true;
-                        foreach ($trace['args'] as $arg) {
-                            if ($firstArg) {
-                                $firstArg = false;
-                            } else {
-                                $call .= ', ';
-                            }
-                            if ($arg === null || is_int($arg) || is_float($arg) || is_string($arg)) {
-                                $call .= json_encode($arg);
-                            } elseif (is_object($call)) {
-                                $call .= get_class($arg);
-                            } else {
-                                $call .= gettype($arg);
-                            }
-                        }
+                    if (isset($trace['args']) && is_array($trace['args']) && !empty($trace['args'])) {
+                        $call .= self::serializeArgument($trace['args'], true);
                     }
                     $call .= ')';
                 }
