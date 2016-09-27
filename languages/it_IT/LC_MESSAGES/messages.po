@@ -1,14 +1,14 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: warnings_log 1.3.7\n"
+"Project-Id-Version: warnings_log 1.3.8\n"
 "Report-Msgid-Bugs-To: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-08-24T15:47:32+02:00\n"
-"PO-Revision-Date: 2016-08-24T15:47:32+02:00\n"
+"POT-Creation-Date: 2016-09-27T14:05:15+02:00\n"
+"PO-Revision-Date: 2016-09-27T14:05:15+02:00\n"
 "Language: it_IT\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
@@ -53,27 +53,27 @@ msgstr "Impostazioni del registro avvisi"
 msgid "Error Handling configured successfully."
 msgstr "La gestione degli avvisi è stata configurata correttamente."
 
-#: packages/warnings_log/controllers/single_page/dashboard/reports/warnings_log.php:66
-#: packages/warnings_log/controllers/single_page/dashboard/reports/warnings_log.php:83
+#: packages/warnings_log/controllers/single_page/dashboard/reports/warnings_log.php:93
+#: packages/warnings_log/controllers/single_page/dashboard/reports/warnings_log.php:110
 #, php-format
 msgid "Invalid parameter: %s"
 msgstr "Parametro non valido: %s"
 
-#: packages/warnings_log/controllers/single_page/dashboard/reports/warnings_log.php:72
+#: packages/warnings_log/controllers/single_page/dashboard/reports/warnings_log.php:99
 #, php-format
 msgid "%d element has been hidden"
 msgid_plural "%d elements have been hidden"
 msgstr[0] "%s elemento è stato nascosto"
 msgstr[1] "%s elementi sono stati nascosti"
 
-#: packages/warnings_log/controllers/single_page/dashboard/reports/warnings_log.php:76
+#: packages/warnings_log/controllers/single_page/dashboard/reports/warnings_log.php:103
 #, php-format
 msgid "%d element has been shown"
 msgid_plural "%d elements have been shown"
 msgstr[0] "%s elemento è stato mostrato"
 msgstr[1] "%s elementi sono stati mostrati"
 
-#: packages/warnings_log/controllers/single_page/dashboard/reports/warnings_log.php:80
+#: packages/warnings_log/controllers/single_page/dashboard/reports/warnings_log.php:107
 #, php-format
 msgid "%d element has been deleted"
 msgid_plural "%d elements have been deleted"
@@ -129,24 +129,36 @@ msgid "In order to activate it, please go to <a href=\"%s\">this page</a>."
 msgstr "Per attivarlo, visitare <a href=\"%s\">questa pagina</a>."
 
 #: packages/warnings_log/elements/warnings_view_header.php:2
+msgid "Shown Items"
+msgstr "Elementi mostrati"
+
+#: packages/warnings_log/elements/warnings_view_header.php:3
+msgid "Hidden Items"
+msgstr "Elementi nascosti"
+
+#: packages/warnings_log/elements/warnings_view_header.php:6
 msgid "Items Selected"
 msgstr "Elementi selezionati"
 
-#: packages/warnings_log/elements/warnings_view_header.php:3
+#: packages/warnings_log/elements/warnings_view_header.php:7
 msgid "Hide"
 msgstr "Nascondi"
 
-#: packages/warnings_log/elements/warnings_view_header.php:4
+#: packages/warnings_log/elements/warnings_view_header.php:8
 msgid "Show"
 msgstr "Mostra"
 
-#: packages/warnings_log/elements/warnings_view_header.php:5
+#: packages/warnings_log/elements/warnings_view_header.php:9
 msgid "Delete"
 msgstr "Elimina"
 
-#: packages/warnings_log/elements/warnings_view_header.php:9
-msgid "Show hidden warnings"
-msgstr "Mostra gli avvisi nascosti"
+#: packages/warnings_log/elements/warnings_view_header.php:11
+msgid "Reload list"
+msgstr "Ricarica elenco"
+
+#: packages/warnings_log/elements/warnings_view_header.php:15
+msgid "Auto-reload list"
+msgstr "Auto-ricarica elenco"
 
 #: packages/warnings_log/single_pages/dashboard/reports/warnings_log/settings.php:16
 msgid "Error Handling"
@@ -206,10 +218,14 @@ msgstr "Ultimo"
 msgid "Call stack"
 msgstr "Stack chiamate"
 
-#: packages/warnings_log/single_pages/dashboard/reports/warnings_log.php:66
+#: packages/warnings_log/single_pages/dashboard/reports/warnings_log.php:31
 msgid "Call Stack"
 msgstr "Stack chiamate"
 
-#: packages/warnings_log/single_pages/dashboard/reports/warnings_log.php:70
+#: packages/warnings_log/single_pages/dashboard/reports/warnings_log.php:32
 msgid "Close"
 msgstr "Chiudi"
+
+#: packages/warnings_log/single_pages/dashboard/reports/warnings_log.php:33
+msgid "Error"
+msgstr "Errore"

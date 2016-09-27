@@ -6,6 +6,7 @@ use Exception;
 use Concrete\Core\Page\Controller\DashboardPageController;
 use Application\Concrete\Util\WhoopsStorage;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Concrete\Core\Asset\Asset;
 
 defined('C5_EXECUTE') or die('Access Denied.');
 
@@ -13,15 +14,21 @@ class WarningsLog extends DashboardPageController
 {
     public function view()
     {
+        $asset = \AssetList::getInstance()->register('javascript', 'warnings_log', 'js/warnings_log.js', ['combine' => !true, 'minify' => !true, 'position' => Asset::ASSET_POSITION_FOOTER], 'warnings_log');
+        $this->requireAsset($asset);
         $header = new \Concrete\Package\WarningsLog\Controller\Element\WarningsView\Header();
         $this->set('headerMenu', $header);
+        $this->set('warningsList', $this->loadWarningsList());
+    }
 
-        $dh = $this->app->make('helper/date');
-        /* @var \Concrete\Core\Localization\Service\Date $dh */
+    private function loadWarningsList()
+    {
         $storage = new WhoopsStorage();
         $cn = $storage->getConnection(false);
         $rows = [];
         if ($cn) {
+            $dh = $this->app->make('helper/date');
+            /* @var \Concrete\Core\Localization\Service\Date $dh */
             $cn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $rs = $cn->query('select * from warnings order by lastSeen DESC');
             while (($row = $rs->fetch(PDO::FETCH_ASSOC)) !== false) {
@@ -39,7 +46,27 @@ class WarningsLog extends DashboardPageController
             }
             $rs->closeCursor();
         }
-        $this->set('rows', $rows);
+
+        return $rows;
+    }
+
+    public function get_warnings_list()
+    {
+        if (!$this->request->isPost()) {
+            $this->view();
+
+            return;
+        }
+        try {
+            if (!$this->token->validate('get_warnings_list')) {
+                throw new Exception($this->token->getErrorMessage());
+            }
+            $list = $this->loadWarningsList();
+
+            return new JsonResponse($list);
+        } catch (Exception $x) {
+            return new JsonResponse(['error' => $x->getMessage()], 400);
+        }
     }
 
     public function bulk_operation()
