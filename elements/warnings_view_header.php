@@ -8,7 +8,7 @@
     <option value="show"><?=t('Show')?></option>
     <option value="delete"><?=t('Delete')?></option>
 </select>
-<button id="wl-reload" class="btn btn-default" disabled="disabled"><?php echo t('Reload list'); ?></button>
+<button id="wl-reload" class="btn btn-primary" disabled="disabled"><?php echo t('Reload list'); ?> <i class="fa fa-cog"></i></button>
 <br>
 <label style="font-weight: normal; float: right">
     <input type="checkbox" id="wl-autoreload" disabled="disabled" />

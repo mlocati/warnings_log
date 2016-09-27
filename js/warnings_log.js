@@ -76,6 +76,11 @@ var UI = (function() {
 	return {
 		setBusyLevel: function (level) {
 			busyLevel = level;
+			if (busyLevel === BUSY.NO) {
+				UI.$reloading.removeClass('fa-spin');
+			} else {
+				UI.$reloading.addClass('fa-spin');
+			}
 			refresh();
 		},
 		getBusyLevel: function() {
@@ -87,6 +92,7 @@ var UI = (function() {
 			UI.$visibility = $('#wl-visibility');
 			UI.$bulk = $('#wl-bulk');
 			UI.$reload = $('#wl-reload');
+			UI.$reloading = UI.$reload.find('i.fa');
 			UI.$autoreload = $('#wl-autoreload');
 			UI.$autoreloadInterval = $('.wl-autoreload-interval');
 			UI.$bulk.on('change', function() {
