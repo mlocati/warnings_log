@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\WarningsLog;
+namespace MLocati\WarningsLog;
 
 defined('C5_EXECUTE') or die(_("Access Denied."));
 

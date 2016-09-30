@@ -2,7 +2,7 @@
 namespace Concrete\Package\WarningsLog\Controller\SinglePage\Dashboard\Reports\WarningsLog;
 
 use Concrete\Core\Page\Controller\DashboardSitePageController;
-use Concrete\Package\WarningsLog\Configuration;
+use MLocati\WarningsLog\Configuration;
 use Application\Concrete\Error\Provider\WhoopsServiceProvider;
 
 defined('C5_EXECUTE') or die('Access Denied.');
