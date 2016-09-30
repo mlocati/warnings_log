@@ -7,7 +7,7 @@ use Package;
 use Page;
 use SinglePage;
 use Exception;
-use Concrete\Package\WarningsLog\Src\Configuration;
+use Concrete\Package\WarningsLog\Configuration;
 use Application\Concrete\Error\Provider\WhoopsServiceProvider;
 
 class Controller extends Package
