@@ -20,7 +20,7 @@ class Settings extends DashboardSitePageController
     public function update_settings()
     {
         if ($this->token->validate('update_settings')) {
-            if ($this->isPost()) {
+            if ($this->request->isPost()) {
                 $config = $this->app->make('config');
                 $current_provider = $config->get(Configuration::FULL_KEY);
                 switch ($this->post('errorhandler')) {
