@@ -62,14 +62,8 @@ var UI = (function() {
 	}
 	function refresh()
 	{
-		var d;
 		setDisabled(UI.$visibility, busyLevel >= BUSY.YES);
-		if (busyLevel > BUSY.NO)  {
-			d = true;
-		} else {
-			d = UI.$tbody.find('input[type="checkbox"]:checked').length === 0;
-		}
-		setDisabled(UI.$bulk, d);
+		setDisabled(UI.$bulk, UI.$tbody.find('input[type="checkbox"]:checked').length === 0);
 		setDisabled(UI.$reload, busyLevel > BUSY.REFRESHING);
 		setDisabled(UI.$autoreload, busyLevel > BUSY.REFRESHING);
 	}
@@ -95,10 +89,11 @@ var UI = (function() {
 			UI.$reloading = UI.$reload.find('i.fa');
 			UI.$autoreload = $('#wl-autoreload');
 			UI.$autoreloadInterval = $('.wl-autoreload-interval');
+			UI.$checkAll = $('#wl-table thead input[type="checkbox"]');
 			UI.$bulk.on('change', function() {
 				Bulk.apply();
 			});
-			$('#wl-table thead input[type="checkbox"]').on('click', function() {
+			UI.$checkAll.on('click', function() {
 				var b = $(this).is(':checked');
 				UI.$tbody.find('input[type="checkbox"]').prop('checked', b);
 				UI.refresh();
@@ -355,11 +350,21 @@ var List = {
 };
 var Bulk = {
 	apply: function() {
-		var operation = UI.$bulk.val();
-		UI.$bulk.prop('selectedIndex', 0);
-		if (operation === '' || UI.getBusyLevel() !== BUSY.NO) {
+		if (UI.getBusyLevel() !== BUSY.NO) {
+			setTimeout(
+				function() {
+					Bulk.apply();
+				},
+				50
+			);
 			return;
 		}
+		var operation = UI.$bulk.val();
+		UI.$bulk.prop('selectedIndex', 0);
+		if (operation === '') {
+			return;
+		}
+		UI.$checkAll.prop('checked', false);
 		var items = [], itemIDs = [];
 		UI.$tbody.find('input[type="checkbox"]:checked').closest('tr').each(function() {
 			var item = $(this).data('Item'), add = false;
