@@ -23,4 +23,4 @@ WarningsLog is a [concrete5](https://www.concrete5.org) package that collects PH
 ### Installation
 
 - `git clone https://github.com/mlocati/warnings_log.git <path-to-concrete5>/packages/warnings_log`
-- Install WarningsLog via the concrete5 dashboard or via the `concrete/bin/concrete5 c5:install warnings_log` CLI command
+- Install WarningsLog via the concrete5 dashboard or via the `concrete/bin/concrete5 c5:package-install warnings_log` CLI command
