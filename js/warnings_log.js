@@ -110,8 +110,8 @@ var UI = (function() {
 				var $a = $(this);
 				List.sortLinks[$a.data('sortby')] = $a;
 				$a.on('click', function(e) {
+                    e.preventDefault();
 					List.sortBy($a.data('sortby'));
-					e.preventDefault();
 				});
 			});
 			UI.$tbody.on('change', UI.refresh);
@@ -193,6 +193,9 @@ function Item(d) {
 								}
 							}
 						],
+						open: function() {
+						    $dlg.closest('.ui-dialog').find('.ui-dialog-buttonpane button').focus();
+						},
 						close: function() {
 							$dlg.remove();
 						}
