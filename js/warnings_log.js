@@ -37,15 +37,16 @@ var Autoreloader = (function() {
 				clearTimeout(hTimer);
 				hTimer = null;
 			}
-			if (UI.$autoreload.is(':checked')) {
-				hTimer = setTimeout(
-					function() {
-						hTimer = null;
-						List.reload(Autoreloader.set);
-					},
-					parseInt(UI.$autoreloadInterval.filter('.label-primary').data('ms'))
-				);
+			if (!UI.$autoreload.hasClass('btn-primary')) {
+				return;
 			}
+			hTimer = setTimeout(
+				function() {
+					hTimer = null;
+					List.reload(Autoreloader.set);
+				},
+				parseInt(UI.$autoreloadInterval.filter('.btn-primary').data('autoreload-every'))
+			);
 		}
 	};
 })();
@@ -62,10 +63,17 @@ var UI = (function() {
 	}
 	function refresh()
 	{
-		setDisabled(UI.$visibility, busyLevel >= BUSY.YES);
-		setDisabled(UI.$bulk, UI.$tbody.find('input[type="checkbox"]:checked').length === 0);
-		setDisabled(UI.$reload, busyLevel > BUSY.REFRESHING);
-		setDisabled(UI.$autoreload, busyLevel > BUSY.REFRESHING);
+		var someChecked = UI.$tbody.find('input[type="checkbox"]:checked').length > 0;
+		setDisabled(UI.$visibility, busyLevel >= BUSY.REFRESHING);
+		if (someChecked) {
+			setDisabled(UI.$bulk, false);
+			var nowHidden = UI.$visibility.filter('.btn-success').data('visibility') === 'hidden';
+			setDisabled(UI.$bulk.filter('[data-bulk-operation="hide"]'), nowHidden);
+			setDisabled(UI.$bulk.filter('[data-bulk-operation="show"]'), !nowHidden);
+		} else {
+			setDisabled(UI.$bulk, true);
+		}
+		setDisabled(UI.$reload, busyLevel >= BUSY.REFRESHING);
 	}
 	return {
 		setBusyLevel: function (level) {
@@ -83,15 +91,15 @@ var UI = (function() {
 		refresh: refresh,
 		initialize: function() {
 			UI.$tbody = $('#wl-table tbody');
-			UI.$visibility = $('#wl-visibility');
-			UI.$bulk = $('#wl-bulk');
+			UI.$visibility = $('.wl-visibility');
+			UI.$bulk = $('.wl-bulk');
 			UI.$reload = $('#wl-reload');
 			UI.$reloading = UI.$reload.find('i.fa');
 			UI.$autoreload = $('#wl-autoreload');
 			UI.$autoreloadInterval = $('.wl-autoreload-interval');
 			UI.$checkAll = $('#wl-table thead input[type="checkbox"]');
-			UI.$bulk.on('change', function() {
-				Bulk.apply();
+			UI.$bulk.on('click', function() {
+				Bulk.apply($(this).data('bulk-operation'));
 			});
 			UI.$checkAll.on('click', function() {
 				var b = $(this).is(':checked');
@@ -107,24 +115,33 @@ var UI = (function() {
 				});
 			});
 			UI.$tbody.on('change', UI.refresh);
-			UI.$visibility.on('change', function() {
+			UI.$visibility.on('click', function(e) {
+				e.preventDefault();
+				var $me = $(this);
+				if ($me.hasClass('btn-success')) {
+					return;
+				}
+				UI.$visibility.removeClass('btn-success').addClass('btn-default');
+				$me.toggleClass('btn-default btn-success');
 				List.populate();
 			});
 			UI.$reload.on('click', function() {
 				List.reload();
 			});
 			UI.$autoreload.on('click', function() {
+				UI.$autoreload.toggleClass('btn-primary btn-default');
 				Autoreloader.set();
 			});
 			UI.$autoreloadInterval.on('click', function() {
-				var $a = $(this);
-				if ($a.hasClass('label-primary')) {
+				var $me = $(this);
+				if ($me.hasClass('btn-primary')) {
 					return;
 				}
-				UI.$autoreloadInterval.removeClass('label-primary').addClass('label-default');
-				$a.removeClass('label-default').addClass('label-primary');
+				UI.$autoreloadInterval.removeClass('btn-primary').addClass('btn-default');
+				$me.toggleClass('btn-default btn-primary');
 				Autoreloader.set();
 			});
+			setDisabled(UI.$autoreload, false);
 			delete UI.initialize;
 		}
 	};
@@ -132,18 +149,32 @@ var UI = (function() {
 
 function Item(d) {
 	var me = this;
-	var UI = me.UI = {};
+	var ui = me.UI = {};
 	$.each(d, function(k, v) {
 		me[k] = v;
 	});
-	UI.$row = $('<tr />')
-		.append('<td><span class="ccm-search-results-checkbox"><input type="checkbox" class="ccm-flat-checkbox" ></span></td>')
+	ui.$row = $('<tr />')
+		.append($('<td />')
+			.append($('<span class="ccm-search-results-checkbox" />')
+				.append($('<input type="checkbox" class="ccm-flat-checkbox" />')
+					.on('click', function() {
+						if (this.checked) {
+							if (UI.$tbody.find('input[type="checkbox"]:not(:checked)').length === 0) {
+								UI.$checkAll.prop('checked', true);
+							}
+						} else {
+							UI.$checkAll.prop('checked', false);
+						}
+					})
+				)
+			)
+		)
 		.append($('<td />').text(me.code))
 		.append($('<td />').text((me.file === '') ? '' : (me.file + (me.line ? (':' + me.line) : ''))))
 		.append($('<td />').html(textToHtml(me.message)))
-		.append(UI.$numSeen = $('<td />').text(me.numSeen.toString()))
+		.append(ui.$numSeen = $('<td />').text(me.numSeen.toString()))
 		.append($('<td />').text(me.firstSeen__view))
-		.append(UI.$lastSeen = $('<td />').text(me.lastSeen__view))
+		.append(ui.$lastSeen = $('<td />').text(me.lastSeen__view))
 		.append($('<td />')
 			.append($('<a href="#"><i class="fa fa-eye"></i>')
 				.on('click', function() {
@@ -171,7 +202,7 @@ function Item(d) {
 			.attr('title', me.callStack)
 		)
 	;
-	UI.$row.data('Item', me);
+	ui.$row.data('Item', me);
 }
 Item.prototype = {
 	refresh: function(d) {
@@ -188,7 +219,7 @@ Item.prototype = {
 		}
 	},
 	shownInTable: function() {
-		return this.hide === (UI.$visibility.val() === '1');
+		return this.hide === (UI.$visibility.filter('.btn-success').data('visibility') === 'hidden');
 	},
 	blink: function($i) {
 		if (!this.shownInTable()) {
@@ -349,19 +380,17 @@ var List = {
 	}
 };
 var Bulk = {
-	apply: function() {
+	apply: function(operation) {
 		if (UI.getBusyLevel() !== BUSY.NO) {
 			setTimeout(
 				function() {
-					Bulk.apply();
+					Bulk.apply(operation);
 				},
 				50
 			);
 			return;
 		}
-		var operation = UI.$bulk.val();
-		UI.$bulk.prop('selectedIndex', 0);
-		if (operation === '') {
+		if (!operation) {
 			return;
 		}
 		UI.$checkAll.prop('checked', false);
