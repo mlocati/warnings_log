@@ -7,45 +7,45 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2016-09-27T16:16:19+02:00\n"
-"PO-Revision-Date: 2016-09-27T16:16:20+02:00\n"
+"POT-Creation-Date: 2017-01-13T10:37:29+01:00\n"
+"PO-Revision-Date: 2017-01-13T10:37:29+01:00\n"
 "Language: en_US\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: packages/warnings_log/controller.php:21
-#: packages/warnings_log/controller.php:148
+#: packages/warnings_log/controller.php:24
+#: packages/warnings_log/controller.php:151
 #: packages/warnings_log/elements/dashboard/install_post.php:7
 msgid "Warnings Log"
 msgstr ""
 
-#: packages/warnings_log/controller.php:26
+#: packages/warnings_log/controller.php:29
 msgid "Log all the warnings."
-msgstr ""
-
-#: packages/warnings_log/controller.php:36
-#, php-format
-msgid "The folder %s must be writable"
 msgstr ""
 
 #: packages/warnings_log/controller.php:39
 #, php-format
-msgid "%s PHP extension is not installed"
+msgid "The folder %s must be writable"
 msgstr ""
 
 #: packages/warnings_log/controller.php:42
 #, php-format
+msgid "%s PHP extension is not installed"
+msgstr ""
+
+#: packages/warnings_log/controller.php:45
+#, php-format
 msgid "%s PDO driver is not installed"
 msgstr ""
 
-#: packages/warnings_log/controller.php:133
+#: packages/warnings_log/controller.php:136
 msgid "Failed to create the destination directory"
 msgstr ""
 
-#: packages/warnings_log/controller.php:137
+#: packages/warnings_log/controller.php:140
 msgid "Failed to copy file to the destination directory"
 msgstr ""
 
-#: packages/warnings_log/controller.php:155
+#: packages/warnings_log/controller.php:158
 msgid "Warnings Log Settings"
 msgstr ""
 
@@ -128,37 +128,32 @@ msgstr ""
 msgid "In order to activate it, please go to <a href=\"%s\">this page</a>."
 msgstr ""
 
-#: packages/warnings_log/elements/warnings_view_header.php:2
-msgid "Shown Items"
-msgstr ""
-
 #: packages/warnings_log/elements/warnings_view_header.php:3
-msgid "Hidden Items"
+msgid "View visible warnings"
 msgstr ""
 
-#: packages/warnings_log/elements/warnings_view_header.php:6
-msgid "Items Selected"
+#: packages/warnings_log/elements/warnings_view_header.php:4
+msgid "View hidden warnings"
 msgstr ""
 
 #: packages/warnings_log/elements/warnings_view_header.php:7
-msgid "Hide"
+msgid "Mark selected warnings as visible"
 msgstr ""
 
 #: packages/warnings_log/elements/warnings_view_header.php:8
-msgid "Show"
+msgid "Mark selected warnings as hidden"
 msgstr ""
 
 #: packages/warnings_log/elements/warnings_view_header.php:9
-msgid "Delete"
+msgid "Delete selected warnings"
 msgstr ""
 
-#: packages/warnings_log/elements/warnings_view_header.php:11
+#: packages/warnings_log/elements/warnings_view_header.php:12
 msgid "Reload list"
 msgstr ""
 
-#: packages/warnings_log/elements/warnings_view_header.php:20
-#, php-format
-msgid "Auto-reload list every %s"
+#: packages/warnings_log/elements/warnings_view_header.php:18
+msgid "Auto-reload list"
 msgstr ""
 
 #: packages/warnings_log/single_pages/dashboard/reports/warnings_log/settings.php:16
