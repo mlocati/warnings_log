@@ -1,6 +1,6 @@
 # WarningsLog
 
-WarningsLog is a [concrete5](https://www.concrete5.org) package that collects PHP warnings ([see a preview](https://www.youtube.com/v/QpoIrOfzQEA?vq=hd720)).
+WarningsLog is a [concrete5](https://www.concrete5.org) package that collects PHP warnings ([see a preview](https://www.youtube.com/v/QpoIrOfzQEA)).
 
 
 ### Features
